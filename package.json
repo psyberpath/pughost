@@ -1,0 +1,32 @@
+{
+  "name": "pughost",
+  "version": "1.0.0",
+  "description": "Production Parity for Local Development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node scripts/install.js",
+    "link": "npm link"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psyberpath/pughost.git"
+  },
+  "keywords": [],
+  "author": "Victor Durosaro",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/psyberpath/pughost/issues"
+  },
+  "homepage": "https://github.com/psyberpath/pughost#readme",
+  "bin": {
+    "pughost": "./cli.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "commander": "^14.0.2"
+  }
+}
