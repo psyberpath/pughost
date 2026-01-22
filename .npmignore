@@ -1,0 +1,7 @@
+src/
+github/
+demo/
+.gitignore
+.DS_Store
+*.log
+pughost.json

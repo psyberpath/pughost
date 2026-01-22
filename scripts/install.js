@@ -1,8 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import { fileURLToPath } from 'url';
 
-const TOXIPROXY_VERSION = 'v2.11.0'; 
+const TOXIPROXY_VERSION = 'v2.11.0';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const BIN_PATH = path.join(__dirname, '..', 'bin');
 
 const getPlatform = () => {

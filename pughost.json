@@ -2,21 +2,19 @@
   "upstream": "localhost:3000",
   "proxyPort": 3001,
   "scenarios": {
-    "lagos_3g": {
-      "latency": 600,
-      "jitter": 200,
-      "bandwidth": 50,
-      "packet_loss": 0.01
+    "mobile_3g_slow": {
+      "latency": 1000,
+      "jitter": 500,
+      "bandwidth": 50
     },
-    "flaky_wifi": {
-      "latency": 50,
-      "jitter": 1000,
+    "wifi_cafe_crowded": {
+      "latency": 100,
+      "jitter": 800,
       "packet_loss": 0.05
     },
-    "starlink_rain": {
-      "latency": 100,
-      "jitter": 50,
-      "packet_loss": 0.005
+    "satellite_link": {
+      "latency": 800,
+      "bandwidth": 1000
     }
   }
 }

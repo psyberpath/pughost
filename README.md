@@ -1,21 +1,21 @@
 # pughost
-**Production Parity for Local Development**
 
-## Overview
-Pughost is a network simulation layer that sits between your local client and your local server. It introduces deterministic network toxicity—latency, jitter, bandwidth limits, and packet loss—to replicate real-world constraints within your development environment.
+> **Localhost is a lie. Test in reality.**
 
-It is designed to force early detection of:
-- Race conditions caused by network latency.
-- UI/UX failures during slow data ingestion.
-- Timeout handling and retry logic.
-- Bandwidth-constrained performance issues.
+[![npm version](https://img.shields.io/npm/v/pughost.svg)](https://www.npmjs.com/package/pughost)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Architecture
-Pughost operates as a process-managed wrapper around **Toxiproxy** (by Shopify). It manages the lifecycle of the underlying proxy binary, providing a zero-configuration developer experience via a Node.js CLI.
+Your API works flawlessly on localhost. Then it hits production—users on 3G in Lagos, satellite connections in rural areas, congested airport WiFi—and everything breaks. Timeouts, race conditions, spinners that never stop.
 
-## Requirements
-- Node.js >= 18 (for native fetch in installation; falls back gracefully on older versions)
-- Internet access during first install (to download Toxiproxy binary)
+**Pughost** injects real-world network chaos into your local development. Find the bugs before your users do.
+
+## What It Does
+
+Pughost is a network simulation layer between your local client and server. It introduces:
+- **Latency** — delayed responses (3G, satellite)
+- **Jitter** — variable delays (unstable connections)
+- **Bandwidth limits** — throttled data transfer
+- **Packet loss** — dropped connections
 
 ## Installation
 
@@ -23,52 +23,79 @@ Pughost operates as a process-managed wrapper around **Toxiproxy** (by Shopify).
 npm install -g pughost
 ```
 
-The installation script automatically detects your operating system (Windows, Linux, macOS) and CPU architecture (x64, arm64), fetching the appropriate Toxiproxy binary. No manual setup or Go installation required.
+Automatically downloads the correct binary for your OS (macOS, Linux, Windows) and architecture (x64, arm64). No manual setup required.
 
 ## Quick Start
-1. Initialize: Navigate to your project root and generate the configuration file:
+
+**1. Initialize** — Generate a config file in your project:
 
 ```bash
 pughost init
 ```
-This creates pughost.json:
-```json
 
+This creates `pughost.json`:
+
+```json
 {
   "upstream": "localhost:3000",
   "proxyPort": 3001,
   "scenarios": {
-    "mobile_3g_slow": {
-      "latency": 600,
-      "jitter": 200,
-      "bandwidth": 50,
-      "packet_loss": 0.01
-    },
-    "wifi_congested": {
-      "latency": 50,
-      "jitter": 1000,
-      "packet_loss": 0.05
-    }
+    "mobile_3g_slow": { "latency": 1000, "jitter": 500, "bandwidth": 50 },
+    "wifi_cafe_crowded": { "latency": 100, "jitter": 800, "packet_loss": 0.05 },
+    "satellite_link": { "latency": 800, "bandwidth": 1000 }
   }
 }
 ```
 
-2. Execute: Start your local backend server normally (e.g., on port 3000). Then activate Pughost:
+**2. Start your backend** — Run your server on its normal port (e.g., 3000).
+
+**3. Activate chaos** — Start the proxy with a scenario:
+
 ```bash
-pughost start --scenario mobile_3g_slow
+pughost start -s mobile_3g_slow
 ```
 
-3. Test: Redirect your API calls (Postman, frontend, mobile simulator) to http://localhost:3001.
-- Direct: localhost:3000 (zero latency / dev mode)  
-- Proxied: localhost:3001 (simulated conditions / reality mode)
+**4. Test through the proxy** — Point your client to `http://localhost:3001` instead of `:3000`.
 
-## Scenario Definitions
-| Parameter   | Unit | Description |
-| :---------: | :---: | :---: |
-| latency     | ms | Base round-trip time delay added to the connection. |
-| jitter      | ms | Variance in latency (simulates network instability). |
-| bandwidth   | kbps | Maximum data transfer rate (simulates throttling; applies downstream). |
-| packet_loss | 0.0 – 1.0 | Probability of a packet segment being dropped (simulates interference). |
+| Endpoint | Behavior |
+|----------|----------|
+| `localhost:3000` | Normal (dev mode) |
+| `localhost:3001` | Chaos (reality mode) |
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `pughost init` | Create `pughost.json` config file |
+| `pughost list` | Show available scenarios |
+| `pughost start -s <name>` | Start proxy with scenario |
+| `pughost --help` | Show all commands |
+
+## Scenario Parameters
+
+| Parameter | Unit | Description |
+|-----------|------|-------------|
+| `latency` | ms | Base delay added to responses |
+| `jitter` | ms | Random variance in latency |
+| `bandwidth` | kbps | Max data transfer rate |
+| `packet_loss` | 0.0–1.0 | Probability of connection drop |
+
+## Use Cases
+
+- **Mobile app testing** — Simulate 3G/4G conditions against your local API
+- **Emerging markets** — Test for users in Nigeria, India, Indonesia
+- **Resilience testing** — Verify timeout handling, retry logic, loading states
+- **QA workflows** — Consistent network conditions for bug reproduction
+
+## How It Works
+
+Pughost wraps [Toxiproxy](https://github.com/Shopify/toxiproxy) (by Shopify) and manages its lifecycle automatically. You get battle-tested chaos engineering without the setup complexity.
+
+## Requirements
+
+- Node.js >= 18
+- Internet access on first install (downloads Toxiproxy binary)
 
 ## License
-MIT
+
+MIT © Victor Durosaro
